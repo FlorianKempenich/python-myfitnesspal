@@ -211,9 +211,9 @@ class Client(MFPBase):
 
     def _get_numeric(self, string, flt=False):
         if flt:
-            return float(re.sub(r'[^\d.]+', '', string))
+            return float(re.sub(r'[^\d.-]+', '', string))
         else:
-            return int(re.sub(r'[^\d.]+', '', string))
+            return int(re.sub(r'[^\d.-]+', '', string))
 
     def _get_fields(self, document):
         meal_header = document.xpath("//tr[@class='meal_header']")[0]
