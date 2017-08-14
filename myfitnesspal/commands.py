@@ -141,3 +141,43 @@ def day(args, *extra, **kwargs):
     print(u'Water: {amount}'.format(amount=day.water))
     if day.notes:
         print(t.italic(day.notes))
+
+
+@command(
+    "Display MyFitnessPal remainings for the day.",
+)
+def remainings(args, *extra, **kwargs):
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'username',
+        help='The MyFitnessPal username'
+    )
+    args = parser.parse_args(extra)
+
+    today = datetime.now()
+    password = get_password_from_keyring_or_interactive(args.username)
+    client = Client(args.username, password)
+    day = client.get_date(today)
+
+    t = Terminal()
+
+    for key, value in day.remainings.items():
+        if value > 0:
+            print(
+                t.green(
+                    u'{key}: {value}'.format(
+                        key=key.title(),
+                        value=value,
+                    )
+                )
+            )
+        else:
+            print(
+                t.red(
+                    u'{key}: {value}'.format(
+                        key=key.title(),
+                        value=value,
+                    )
+                )
+            )
+
