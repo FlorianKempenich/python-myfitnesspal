@@ -210,7 +210,7 @@ class TestClient(MFPTestCase):
             }
         )
         self.assertEquals(
-            day.remaining,
+            day.remainings,
             {
                 'calories': 221,
                 'carbohydrates': 140,
@@ -350,6 +350,17 @@ class TestClient(MFPTestCase):
                 'protein': Weight(g=78),
                 'sodium': Weight(mg=2069),
                 'sugar': Weight(g=58),
+            }
+        )
+        self.assertEquals(
+            day.remainings,
+            {
+                'calories': Energy(Calorie=221),
+                'carbohydrates': Weight(g=140),
+                'fat': Weight(g=11),
+                'protein': Weight(g=15),
+                'sodium': Weight(mg=431),
+                'sugar': Weight(g=-8),
             }
         )
 

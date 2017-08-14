@@ -247,6 +247,27 @@ class Client(MFPBase):
 
         return nutrition
 
+    def _get_remainings(self, document):
+        total_header = document.xpath("//tr[@class='total']")[0]
+        remaining_header = total_header.getnext().getnext()  # The following TR contains goals, the one after: remainings
+        columns = remaining_header.findall('td')
+
+        fields = self._get_fields(document)
+
+        nutrition = {}
+        for n in range(1, len(columns)):
+            column = columns[n]
+            try:
+                nutr_name = fields[n]
+            except IndexError:
+                # This is the 'delete' button
+                continue
+            value = self._extract_value(column)
+            nutrition[nutr_name] = self._get_measurement(nutr_name, value)
+
+        return nutrition
+
+
     def _get_meals(self, document):
         meals = []
         fields = None
@@ -283,9 +304,9 @@ class Client(MFPBase):
                     except IndexError:
                         # This is the 'delete' button
                         continue
-                    
+
                     value = self._extract_value(column)
-                    
+
                     nutrition[nutr_name] = self._get_measurement(
                         nutr_name,
                         value
@@ -312,7 +333,7 @@ class Client(MFPBase):
             value = self._get_numeric(element.text)
         else:
             value = self._get_numeric(element.xpath("span[@class='macro-value']")[0].text)
-        
+
         return value
 
     def get_date(self, *args, **kwargs):
@@ -337,8 +358,9 @@ class Client(MFPBase):
             )
         )
 
-        meals = self._get_meals(document)
-        goals = self._get_goals(document)
+        meals     = self._get_meals(document)
+        goals     = self._get_goals(document)
+        remainings = self._get_remainings(document)
 
         # Since this data requires an additional request, let's just
         # allow the day object to run the request if necessary.
@@ -349,6 +371,7 @@ class Client(MFPBase):
             date=date,
             meals=meals,
             goals=goals,
+            remainings=remainings,
             notes=notes,
             water=water
         )

@@ -2,14 +2,14 @@ from myfitnesspal.base import MFPBase
 
 
 class Day(MFPBase):
-    def __init__(self, date, meals=None, goals=None, notes=None, water=None):
+    def __init__(self, date, meals=None, goals=None, remainings=None, notes=None, water=None):
         self._date = date
         self._meals = meals
         self._goals = goals
+        self._remainings = remainings
         self._notes = notes
         self._water = water
         self._totals = None
-        self._remaining = None
 
     def __getitem__(self, value):
         for meal in self._meals:
@@ -45,11 +45,11 @@ class Day(MFPBase):
         return self._goals
 
     @property
-    def remaining(self):
-        if self._remaining is None:
-            self._compute_remaining()
+    def remainings(self):
+        if self._remainings is None:
+            self._compute_remainings()
 
-        return self._remaining
+        return self._remainings
 
     @property
     def date(self):
@@ -79,13 +79,13 @@ class Day(MFPBase):
 
         self._totals = totals
 
-    def _compute_remaining(self):
+    def _compute_remainings(self):
         remaining = {}
         for k in self.totals:
             if k in self.goals:
                 remaining[k] = self.goals[k] - self.totals[k]
 
-        self._remaining = remaining
+        self._remainings = remaining
 
     def __unicode__(self):
         return u'%s %s' % (
