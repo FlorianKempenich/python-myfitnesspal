@@ -209,6 +209,17 @@ class TestClient(MFPTestCase):
                 'sugar': 58,
             }
         )
+        self.assertEquals(
+            day.remaining,
+            {
+                'calories': 221,
+                'carbohydrates': 140,
+                'fat': 11,
+                'protein': 15,
+                'sodium': 431,
+                'sugar': -8,
+            }
+        )
 
     def test_get_day(self):
         self.client.unit_aware = True

@@ -9,6 +9,7 @@ class Day(MFPBase):
         self._notes = notes
         self._water = water
         self._totals = None
+        self._remaining = None
 
     def __getitem__(self, value):
         for meal in self._meals:
@@ -44,6 +45,13 @@ class Day(MFPBase):
         return self._goals
 
     @property
+    def remaining(self):
+        if self._remaining is None:
+            self._compute_remaining()
+
+        return self._remaining
+
+    @property
     def date(self):
         return self._date
 
@@ -68,7 +76,16 @@ class Day(MFPBase):
                     totals[k] = v
                 else:
                     totals[k] += v
+
         self._totals = totals
+
+    def _compute_remaining(self):
+        remaining = {}
+        for k in self.totals:
+            if k in self.goals:
+                remaining[k] = self.goals[k] - self.totals[k]
+
+        self._remaining = remaining
 
     def __unicode__(self):
         return u'%s %s' % (
