@@ -142,6 +142,10 @@ def day(args, *extra, **kwargs):
     if day.notes:
         print(t.italic(day.notes))
 
+    if day.remainings:
+        print(u'')
+        print(t.bold("Remainings"))
+        _print_remainings(t, day.remainings)
 
 @command(
     "Display MyFitnessPal remainings for the day.",
@@ -159,12 +163,13 @@ def remainings(args, *extra, **kwargs):
     client = Client(args.username, password)
     day = client.get_date(today)
 
-    t = Terminal()
+    _print_remainings(Terminal(), day.remainings)
 
-    for key, value in day.remainings.items():
+def _print_remainings(terminal, remainings):
+    for key, value in remainings.items():
         if value > 0:
             print(
-                t.green(
+                terminal.green(
                     u'{key}: {value}'.format(
                         key=key.title(),
                         value=value,
@@ -173,11 +178,10 @@ def remainings(args, *extra, **kwargs):
             )
         else:
             print(
-                t.red(
+                terminal.red(
                     u'{key}: {value}'.format(
                         key=key.title(),
                         value=value,
                     )
                 )
             )
-
